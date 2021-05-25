@@ -51,7 +51,7 @@ hinhthang:
 	mtc1 $s0,$f2		#move n to FPU
 	cvt.s.w $f2,$f2		#convert from word to float
 	div.s $f2,$f1,$f2	#h = b/n	
-#tính S = (f(0)+f(b))/2
+#tÃ­nh S = (f(0)+f(b))/2
 	jal tinhf		#f(b) ~ x=b
 	mov.s $f4,$f1		
 	sub.s $f1,$f1,$f1	#x=0
@@ -93,7 +93,7 @@ done:
 	addi $sp,$sp,32
 	jr $ra
 
-#tính hàm f(x) : x->$f1; ket qua tra ve $f1
+#tÃ­nh hÃ m f(x)=4/(x^2+1) : x->$f1; ket qua tra ve $f1
 tinhf: 	
 	addi $sp,$sp,-12
 	sw $ra,0($sp)
