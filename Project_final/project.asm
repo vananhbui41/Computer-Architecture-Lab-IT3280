@@ -1,4 +1,3 @@
-
 .data 
 intro: .asciiz "Chuong trinh tinh dien tich!"
 nhapb: .asciiz "Nhap duong gioi han x = b: "
@@ -45,25 +44,19 @@ endmain:
 	
 ##########################################################
 #Ham tinh dien tich theo phuong phap hinh thang
-#$s0 / $f2<- n, h-> $f2, x-> $f3; 
+#$s0 / $f2 <- n, h-> $f2, x -> $f3; 
 #f(0) -> $f4; f(b) -> $f5
 #Ket qua tra ve S -> $f0
 ##########################################################
 hinhthang:
-
-	addi $sp,$sp,-32
+	addi $sp,$sp,-16
 	sw $ra,0($sp)
 	sw $s0,4($sp)		
 	swc1 $f1,8($sp) 	
 	swc1 $f2,12($sp)
-	swc1 $f3,16($sp)
-	swc1 $f4,20($sp)	
-	swc1 $f5,24($sp)
-	swc1 $f6,28($sp)
-	sw $t0,32($sp)
-	sw $t1,36($sp)	
-	div.s $f2,$f1,$f2	#h = b/n	
-#tính S = (f(0)+f(b))/2
+	div.s $f2,$f1,$f2	#chieu cao hinh thang: h = b/n	
+	
+#tính (f(0)+f(b))/2
 	jal tinhf		#f(b) ~ x=b
 	mov.s $f4,$f1		
 	sub.s $f1,$f1,$f1	#x=0
@@ -71,19 +64,19 @@ hinhthang:
 	mov.s $f5,$f1
 	
 	add.s $f0,$f4,$f5	#S=f(0)+f(b)
-	addi $t0,$0,1
+	addi $t0,$zero,1
 	mtc1 $t0,$f6
 	cvt.s.w $f6,$f6
 	add.s $f6,$f6,$f6
 	div.s $f0,$f0,$f6	#S=S/2
 	
-	addi $t0,$0,1		#i=1
+	addi $t0,$zero,1	#index i=1
 loop:	slt $t1,$t0,$s0		#if i>=n
-	beq $t1,$0,done		#then branch to done
+	beq $t1,$zero,done	#then branch to done
 	mtc1 $t0,$f3		#move i to FTU
 	cvt.s.w $f3,$f3		#convert i to float
-	mul.s $f3,$f3,$f2	#x = i*h
-	mov.s $f1,$f3		#x=x
+	mul.s $f3,$f3,$f2	#i*h
+	mov.s $f1,$f3		#x=i*h
 	jal tinhf		#tinh f(x)
 	add.s $f0,$f0,$f1	#S = S+f(x)
 	addi $t0,$t0,1		#i=i+1
@@ -95,17 +88,13 @@ done:
 	lw $s0,4($sp)
 	lwc1 $f1,8($sp)
 	lwc1 $f2,12($sp)
-	lwc1 $f3,16($sp)
-	lwc1 $f4,20($sp)	
-	lwc1 $f5,24($sp)
-	lwc1 $f6,28($sp)
-	lw $t0,32($sp)
-	lw $t1,36($sp)
 	lw $ra,0($sp)
-	addi $sp,$sp,32
+	addi $sp,$sp,16
 	jr $ra
 
+##########################################################
 #tính hàm f(x)=4/(x^2+1) : x->$f1; ket qua tra ve $f1
+##########################################################
 tinhf: 	
 	addi $sp,$sp,-12
 	sw $ra,0($sp)
